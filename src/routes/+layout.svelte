@@ -1,8 +1,6 @@
 <script lang="ts">
 	import '../app.css';
 	import Header from './Header.svelte';
-	import { writable } from 'svelte/store';
-	import { page } from '$app/stores';
 
 	const navLinks = [
 		{ text: 'PORTFOLIO', href: '/portfolio' },

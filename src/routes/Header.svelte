@@ -2,6 +2,7 @@
 	import { page } from '$app/stores';
 	import Ripple from '../ripple/index';
 	import { onMount } from 'svelte';
+
 	interface NavLink {
 		text: string;
 		href: string;
@@ -12,6 +13,7 @@
 	});
 
 	export let links: NavLink[] = [];
+	export let user: any;
 
 	const handleClick = (href: string) => {
 		activeTab = href;
@@ -40,12 +42,38 @@
 	</div>
 
 	<div class="flex items-center space-x-4">
-		<button
-			class="text-white hover:text-gray-300"
-			on:click={() => console.log('Clicked user profile')}
-		>
-			<p>User Profile</p>
-		</button>
+		{#if !$page.data.user}
+			<a
+				href="/login"
+				class={activeTab === '/login'
+					? 'active-link text-white text-xl px-9 py-3'
+					: 'text-white hover:bg-[#3a425d] text-xl px-9 py-3'}
+				on:click={() => handleClick('/login')}
+				use:Ripple={{
+					centerd: false,
+					color: '#fff',
+					spreadingduration: '.3s',
+					opacity: 0.2
+				}}
+			>
+				LOGIN
+			</a>
+			<a
+				href="/register"
+				class={activeTab === '/register'
+					? 'active-link text-white text-xl px-9 py-3'
+					: 'text-white hover:bg-[#3a425d] text-xl px-9 py-3'}
+				on:click={() => handleClick('/register')}
+				use:Ripple={{
+					centerd: false,
+					color: '#fff',
+					spreadingduration: '.3s',
+					opacity: 0.2
+				}}
+			>
+				REGISTER
+			</a>
+		{/if}
 	</div>
 </nav>
 
