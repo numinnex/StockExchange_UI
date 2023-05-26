@@ -9,8 +9,6 @@ export const load: PageServerLoad = async ({locals}) => {
         throw redirect(302, '/');
     }
 };
-
-
 export const actions = {
     login: async ({request , cookies}) => {
         const formData = await request.formData();
@@ -30,8 +28,8 @@ export const actions = {
 
     if(response.ok){
         const data: AuthResponseSucces = await response.json();
-        cookies.set("token", data.token, { path: "/" });
-        cookies.set("refreshtoken", data.refreshToken, { path: "/" });
+        cookies.set("token", data.token, { path: "/" , maxAge: 60 * 60 * 24 });
+        cookies.set("refreshtoken", data.refreshToken, { path: "/", maxAge: 60 * 60 * 24 });
 
         throw redirect(301, "/");
     }

@@ -1,47 +1,72 @@
-import type { Handle, HandleFetch } from '@sveltejs/kit';
+import type { Handle } from '@sveltejs/kit';
 import {baseUrl} from './routes/baseUrl';
+import type { AuthIdentifyResponse, AuthResponseSucces } from './contracts/authContracts';
 
 export const handle: Handle = async ({ event, resolve }) => {
     const token = event.cookies.get("token");
+    const refreshToken = event.cookies.get("refreshtoken")!;
 
-    if(event.locals.user !== undefined){
+    if(event.locals.user ){
         return await resolve(event);
     }
 
-    console.log("handle happend");
     if(!token){
         return await resolve(event);
     }
     const body = JSON.stringify({ token });
 
-    const response = await fetch(baseUrl + "identity/identify" , {
-      body,
-      method: "POST",
-      headers: { "Authorization": `Bearer ${token}`,
-        "content-type": "application/json" },
+    const request = new Request(baseUrl + "identity/identify", {
+        body,
+        method: "POST",
+        headers: { "content-type": "application/json",
+        Authorization: `Bearer ${token}`},
     });
 
+    const response = await fetch(request);
+
     if(response.ok){
-        const data = await response.json();
-        console.log(data);
+        const data: AuthIdentifyResponse = await response.json();
         event.locals.user = {
             username: data.userName
+        }
+    }
+    if(response.status === 401){
+        const newAuthResult: AuthResponseSucces | undefined = await RefreshToken(token, refreshToken);
+        if(newAuthResult !== undefined){
+            event.cookies.set("token", newAuthResult.token, {path: "/" , maxAge: 60 * 60 * 24});
+            event.cookies.set("refreshtoken", newAuthResult.refreshToken, {path: "/", maxAge: 60 * 60 * 24});
+
+            const newRequest = new Request(baseUrl + "identity/identify", {
+                body,
+                method: "POST",
+                headers: { "content-type": "application/json",
+                Authorization: `Bearer ${newAuthResult?.token}`}, 
+            })
+
+            const response = await fetch(newRequest);
+            if(response.ok){
+                const data: AuthIdentifyResponse = await response.json();
+                event.locals.user = {
+                    username: data.userName
+                }
+            }
         }
     }
     return await resolve(event);
 };
 //hook for refreshToken && baseUrl
-export const handleFetch: HandleFetch = (async ({ request , fetch, event: { cookies } }) => {
+async function RefreshToken (token: string, refreshToken: string) {
+    const body = JSON.stringify({ token, refreshToken });
+    const request = new Request(baseUrl + "identity/refresh", {
+        body,
+        method: "POST",
+        headers: { "content-type": "application/json"}
+    });
+    const response = await fetch(request);
 
-    if(request.url.startsWith(baseUrl)){
-        //console.log("something happend");
-        //request.headers.set('Authorization', `Bearer ${cookie}`);
-        //const response = await fetch(request);
-        //console.log(await response.json());
-
-        // if(response.status != 401){
-        //     return response;
-        // }
+    if(response.ok){
+        const result : AuthResponseSucces= await response.json();
+        return result;
     }
-    return fetch(request);
-}) ;
+             
+}

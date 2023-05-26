@@ -1,13 +1,28 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
+
 	export let form;
 </script>
 
+<svelte:head>
+	<title>Register</title>
+	<meta name="description" content="Stock Exchange" />
+</svelte:head>
 <main class="w-full h-screen flex items-center justify-center">
-	<form class="shadow-md rounded-lg w-[400px] p-8 bg-neutral-200" method="POST" action="?/register">
+	<form
+		class="shadow-md rounded-lg w-[400px] p-8 bg-neutral-200"
+		method="POST"
+		action="?/register"
+		use:enhance
+	>
 		<h2 class="text-center text-2xl text-neutral-950 mb-4">Sign In</h2>
 		{#if form}
-			<h4 class="text-red-600 font-light text-md text-center">
-				{form.errors}
+			<h4 class="text-red-600 font-light text-md text-left mb-4">
+				<ul class="list-disc">
+					{#each form.errors as error}
+						<li>{error}</li>
+					{/each}
+				</ul>
 			</h4>
 		{/if}
 		<div class="mb-2">

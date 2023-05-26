@@ -1,5 +1,4 @@
 
-
 /**
  * Options for customizing ripples
  */

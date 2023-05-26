@@ -13,7 +13,6 @@
 	});
 
 	export let links: NavLink[] = [];
-	export let user: any;
 
 	const handleClick = (href: string) => {
 		activeTab = href;
@@ -73,6 +72,10 @@
 			>
 				REGISTER
 			</a>
+		{:else if $page.data.user}
+			<p class="text-white text-xl px-9 py-3">
+				Welcome, {$page.data.user.username.split('@')[0]}
+			</p>
 		{/if}
 	</div>
 </nav>
