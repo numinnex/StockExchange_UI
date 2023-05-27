@@ -2,11 +2,13 @@
 	import NumberInput from '../../components/NumberInput.svelte';
 	import SearchInput from '../../components/SearchInput.svelte';
 	import Search from '~icons/mdi/search';
+	import SelectInput from '../../components/SelectInput.svelte';
 
 	const searchProps = {
 		label: 'Symbol',
 		placeHolder: 'Look up Symbol/Comapny Name'
 	};
+	const actions = ['Buy', 'Sell'];
 </script>
 
 <svelte:head>
@@ -23,15 +25,11 @@
 
 		<div class="grid grid-cols-2 w-3/4 gap-4">
 			<div>
-				<label for="Action" class="block text-sm">Action</label>
-				<input
-					type="text"
-					id="Action"
-					class="w-full mt-2 px-2 py-3 outline outline-neutral-800 outline-1 rounded-sm"
-				/>
+				<label for="Action" class="block text-sm mb-2">Action</label>
+				<SelectInput options={actions} />
 			</div>
 			<div>
-				<NumberInput label={'Quantity'} width="w-full" />
+				<NumberInput label={'Quantity'} width="w-1/2" />
 			</div>
 			<div>
 				<label for="element3">Element 3</label>

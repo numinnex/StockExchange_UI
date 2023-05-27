@@ -19,7 +19,6 @@
 		type="text"
 		id={label}
 		name={label}
-		min="0"
 		placeholder={placeHolder}
 		class="w-11/12 focus:outline-none"
 		on:click={(event) => {
