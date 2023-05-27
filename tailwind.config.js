@@ -7,4 +7,3 @@ export default {
   },
   plugins: [],
 }
-           //'#1f2937',
