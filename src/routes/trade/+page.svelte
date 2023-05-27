@@ -1,9 +1,12 @@
 <script lang="ts">
-	import TextInput from '../../components/TextInput.svelte';
-	import { clickOutside } from '../../utils/onClickOutside';
+	import NumberInput from '../../components/NumberInput.svelte';
+	import SearchInput from '../../components/SearchInput.svelte';
 	import Search from '~icons/mdi/search';
 
-	let changeOutlineColor: boolean = false;
+	const searchProps = {
+		label: 'Symbol',
+		placeHolder: 'Look up Symbol/Comapny Name'
+	};
 </script>
 
 <svelte:head>
@@ -14,13 +17,13 @@
 <div class="px-11">
 	<p class="text-white uppercase text-xs tracking-widest mb-2">Symbol Lookup</p>
 	<div class="bg-white p-4">
-		<TextInput label="Symbol" placeHolder="Look up Symbol/Comapny Name">
+		<SearchInput {...searchProps}>
 			<Search class="text-lg" />
-		</TextInput>
+		</SearchInput>
 
 		<div class="grid grid-cols-2 w-3/4 gap-4">
 			<div>
-				<label for="Action" class="text-sm">Action</label>
+				<label for="Action" class="block text-sm">Action</label>
 				<input
 					type="text"
 					id="Action"
@@ -28,8 +31,7 @@
 				/>
 			</div>
 			<div>
-				<label for="element2">Element 2</label>
-				<input type="text" id="element2" class="w-full mt-2 p-2 border border-gray-300 rounded" />
+				<NumberInput label={'Quantity'} width="w-full" />
 			</div>
 			<div>
 				<label for="element3">Element 3</label>
