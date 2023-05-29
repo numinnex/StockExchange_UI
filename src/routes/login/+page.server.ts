@@ -6,15 +6,16 @@ import type { AuthResponseSucces , AuthResponseFailure} from '../../contracts/au
 
 export const load: PageServerLoad = async ({locals}) => {
     if(locals.user){
-        throw redirect(302, '/');
+        throw redirect(302, '/portfolio');
     }
 };
 export const actions = {
+    //@ts-ignore
     login: async ({request , cookies}) => {
         const formData = await request.formData();
         const email = formData.get("email");
         const password = formData.get("password");
-        const body = await JSON.stringify({ email, password });
+        const body = JSON.stringify({ email, password });
 
 
         const url = baseUrl + "identity/login";
@@ -31,7 +32,7 @@ export const actions = {
         cookies.set("token", data.token, { path: "/" , maxAge: 60 * 60 * 24 });
         cookies.set("refreshtoken", data.refreshToken, { path: "/", maxAge: 60 * 60 * 24 });
 
-        throw redirect(301, "/");
+        throw redirect(301, "/portfolio");
     }
 
     if(response.status == 400){
