@@ -1,4 +1,4 @@
-import type { LookUpSucces } from '../../contracts/lookupContracts';
+import type { LookUpFailure, LookUpSucces } from '../../contracts/lookupContracts';
 import { baseUrl } from '../baseUrl';
 import { fail, type Actions } from '@sveltejs/kit';
 
@@ -27,22 +27,9 @@ export const actions = {
 			};
 		}
 		if (response.status == 400) {
-			const result = await response.json();
-			console.log(result[0]);
-			return fail(400, { errors: result[0].message });
+			const result: LookUpFailure = await response.json();
+			return fail(400, { errors: result });
 		}
-		return fail(500, { errors: 'Something went wrong' });
-	},
-
-	symbol: async ({ request }) => {
-		const formData = await request.formData();
-		const symbol = formData.get('Symbol');
-		console.log(symbol);
-		if (symbol === '') {
-			return;
-		}
-		const body = JSON.stringify({ symbol });
-
-		const url = baseUrl + 'stock/lookup';
+		return fail(500, { errors: ['Something went wrong'] });
 	}
 } satisfies Actions;

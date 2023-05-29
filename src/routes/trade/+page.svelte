@@ -3,6 +3,8 @@
 	import SearchInput from '../../components/SearchInput.svelte';
 	import Search from '~icons/mdi/search';
 	import SelectInput from '../../components/SelectInput.svelte';
+	import { clickOutside } from '../../utils/onClickOutside';
+	import SearchList from '../../components/SearchList.svelte';
 
 	export let form;
 
@@ -14,10 +16,6 @@
 
 	$: currentOrderType = selectedOrderType;
 	$: currentAction = selectedAction;
-	$: {
-		//todo trigger searching for symbol
-		//console.log(searchVal);
-	}
 
 	const searchProps = {
 		label: 'Symbol',
@@ -32,21 +30,18 @@
 	<meta name="description" content="Stock Exchange" />
 </svelte:head>
 
-{#if currentSymbols}
-	{#each currentSymbols as symbol}
-		<p>{symbol.symbol}</p>
-	{/each}
-{/if}
-
 <div class="px-11">
 	<p class="text-white uppercase text-xs tracking-widest mb-2">Symbol Lookup</p>
 	<div class="bg-white p-4">
-		<SearchInput {...searchProps} bind:searchVal>
-			<Search class="text-lg" />
-		</SearchInput>
+		<div class="mb-8">
+			<SearchInput {...searchProps} bind:searchVal>
+				<Search class="text-lg" />
+			</SearchInput>
+			<SearchList actionData={form} bind:searchVal />
+		</div>
 
 		<div class="grid grid-cols-2 w-3/4 gap-4">
-			<div>
+			<div class="mb-4">
 				<SelectInput options={actions} label="Action" bind:selectedOption={selectedAction} />
 			</div>
 			<div>
@@ -67,6 +62,3 @@
 		</div>
 	</div>
 </div>
-
-<style>
-</style>

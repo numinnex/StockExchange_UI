@@ -45,14 +45,17 @@
 			>
 				{#each options as option}
 					{#if option === selectedOption}
+						<input
+							type="text"
+							value={option}
+							class="p-3 cursor-pointer bg-indigo-200 text-indigo-700 w-full"
+							on:click={() => selectOption(option)}
+						/>
+					{:else}
 						<div
-							class="p-3 cursor-pointer bg-indigo-200 text-indigo-700"
+							class="p-3 cursor-pointer hover:bg-gray-100 w-full"
 							on:click={() => selectOption(option)}
 						>
-							{option}
-						</div>
-					{:else}
-						<div class="p-3 cursor-pointer hover:bg-gray-100" on:click={() => selectOption(option)}>
 							{option}
 						</div>
 					{/if}

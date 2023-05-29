@@ -21,7 +21,7 @@
 	bind:value={initValue}
 	inputmode="decimal"
 	class="{width} mt-2 px-2 py-3 outline outline-neutral-800 outline-1 rounded-sm"
-	class:outline-indigo-600={changeOutlineColor}
+	class:outline-indigo-700={changeOutlineColor}
 	class:outline-2={changeOutlineColor}
 	on:input={handleInput}
 	use:clickOutside={() => {

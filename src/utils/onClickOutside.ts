@@ -1,6 +1,4 @@
-import { writable } from 'svelte/store';
-
-export function clickOutside(element: any, callBackFunction: any) {
+export function clickOutside(element: HTMLElement, callBackFunction: any) {
 	function onClick(event: any) {
 		if (!element.contains(event.target)) {
 			callBackFunction();
@@ -17,4 +15,3 @@ export function clickOutside(element: any, callBackFunction: any) {
 		}
 	};
 }
-export const symbolLookupStore = writable('');
