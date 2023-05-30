@@ -27,9 +27,37 @@ export const actions = {
 			};
 		}
 		if (response.status == 400) {
-			const result: LookUpFailure = await response.json();
-			return fail(400, { errors: result });
+			const result = await response.json();
+			return fail(400, { errors: result[0].message });
 		}
-		return fail(500, { errors: ['Something went wrong'] });
+		return fail(500, { errors: 'Something went wrong' });
+	},
+	symbol: async ({ request, cookies }) => {
+		const formData = await request.formData();
+		const symbol = formData.get('Symbol');
+		console.log(symbol);
+		if (symbol === '') {
+			return;
+		}
+
+		const url = baseUrl + `stock/${symbol}`;
+		const response = await fetch(url, {
+			method: 'GET',
+			headers: {
+				'content-type': 'application/json',
+				Authorization: `Bearer ${cookies.get('token')}`
+			}
+		});
+
+		if (response.ok) {
+			const result = await response.json();
+			console.log(result);
+			return {
+				stock: result
+			};
+		} else if (response.status == 404) {
+			const result = await response.json();
+			return fail(404, { stockErrors: result });
+		}
 	}
 } satisfies Actions;

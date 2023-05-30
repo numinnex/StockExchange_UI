@@ -34,15 +34,32 @@ export const actions = {
 		return fail(500, { errors: 'Something went wrong' });
 	},
 
-	symbol: async ({ request }) => {
+	symbol: async ({ request, cookies }) => {
 		const formData = await request.formData();
 		const symbol = formData.get('Symbol');
 		console.log(symbol);
 		if (symbol === '') {
 			return;
 		}
-		const body = JSON.stringify({ symbol });
 
-		const url = baseUrl + 'stock/lookup';
+		const url = baseUrl + `stock/${symbol}`;
+		const response = await fetch(url, {
+			method: 'GET',
+			headers: {
+				'content-type': 'application/json',
+				Authorization: `Bearer ${cookies.get('token')}`
+			}
+		});
+
+		if (response.ok) {
+			const result = await response.json();
+			console.log(result);
+			return {
+				stock: result
+			};
+		} else if (response.status == 404) {
+			const result = await response.json();
+			return fail(404, { stockErrors: result });
+		}
 	}
 } satisfies Actions;

@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import type { ActionData } from '../routes/$types';
 	import { clickOutside } from '../utils/onClickOutside';
 	import { createDebouncedSubmit } from '../utils/debouncedSubmit';
 
@@ -27,6 +26,9 @@
 	<input name="Symbol" type="text" hidden value={selectedSymbol} />
 	{#if actionData?.errors}
 		<div class="text-red-500 text-xs ml-2">{actionData.errors}</div>
+	{/if}
+	{#if actionData?.stockErrors}
+		<div class="text-red-500 text-xs ml-2">{actionData.stockErrors[0].message}</div>
 	{/if}
 	{#if isOpen && currentSymbols && currentSymbols.length > 0}
 		<div

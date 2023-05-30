@@ -31,5 +31,10 @@
 			</SearchInput>
 			<SearchList actionData={form} bind:searchVal />
 		</div>
+		{#if form?.stock}
+			{form.stock[0].symbol}
+			{form.stock[0].name}
+			{form.stock[0].price}
+		{/if}
 	</div>
 </div>
