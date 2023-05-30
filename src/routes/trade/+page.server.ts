@@ -1,4 +1,5 @@
 import type { LookUpSucces } from '../../contracts/lookupContracts';
+import type { StockResponse } from '../../contracts/stockContracts';
 import { baseUrl } from '../baseUrl';
 import { fail, type Actions } from '@sveltejs/kit';
 
@@ -20,6 +21,8 @@ export const actions = {
 				Authorization: `Bearer ${cookies.get('token')}`
 			}
 		});
+		console.log(response.status);
+
 		if (response.ok) {
 			const result: LookUpSucces[] = await response.json();
 			return {
@@ -52,12 +55,13 @@ export const actions = {
 		});
 
 		if (response.ok) {
-			const result = await response.json();
+			const result: StockResponse[] = await response.json();
 			console.log(result);
 			return {
 				stock: result
 			};
 		} else if (response.status == 404) {
+			console.log(await response.json());
 			const result = await response.json();
 			return fail(404, { stockErrors: result });
 		}

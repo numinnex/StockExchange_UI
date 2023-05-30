@@ -1,4 +1,5 @@
 import type { LookUpFailure, LookUpSucces } from '../../contracts/lookupContracts';
+import type { StockResponse } from '../../contracts/stockContracts';
 import { baseUrl } from '../baseUrl';
 import { fail, type Actions } from '@sveltejs/kit';
 
@@ -50,7 +51,7 @@ export const actions = {
 		});
 
 		if (response.ok) {
-			const result = await response.json();
+			const result: StockResponse[] = await response.json();
 			console.log(result);
 			return {
 				stock: result

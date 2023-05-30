@@ -3,8 +3,8 @@
 	import SearchInput from '../../components/SearchInput.svelte';
 	import Search from '~icons/mdi/search';
 	import SelectInput from '../../components/SelectInput.svelte';
-	import { clickOutside } from '../../utils/onClickOutside';
 	import SearchList from '../../components/SearchList.svelte';
+	import StockDisplay from '../../components/StockDisplay.svelte';
 
 	export let form;
 
@@ -39,10 +39,8 @@
 			</SearchInput>
 			<SearchList actionData={form} bind:searchVal />
 		</div>
-		{#if form?.stock}
-			{form.stock[0].symbol}
-			{form.stock[0].name}
-			{form.stock[0].price}
+		{#if form}
+			<StockDisplay stockResponse={form.stock} />
 		{/if}
 
 		<div class="grid grid-cols-2 w-3/4 gap-4">
