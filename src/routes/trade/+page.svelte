@@ -39,7 +39,7 @@
 			</SearchInput>
 			<SearchList actionData={form} bind:searchVal />
 		</div>
-		{#if form}
+		{#if form?.stock}
 			<StockDisplay stockResponse={form.stock} />
 		{/if}
 

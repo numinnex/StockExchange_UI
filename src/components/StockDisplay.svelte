@@ -1,7 +1,46 @@
 <script lang="ts">
 	import type { StockResponse } from '../contracts/stockContracts';
+	import * as signalR from '@microsoft/signalr';
 	export let stockResponse: StockResponse[] | undefined;
-	import US from '~icons/circle-flags/us';
+	import USFlag from '~icons/circle-flags/us';
+	import { baseUrl } from '../routes/baseUrl';
+	import { onDestroy, onMount } from 'svelte';
+
+	let connection = new signalR.HubConnectionBuilder().withUrl('/price').build();
+	connection.baseUrl = baseUrl.replace('/api/v1', '') + 'price';
+	let intervalId: number;
+
+	let realtimePrice: number;
+
+	onMount(() => {
+		connection
+			.start()
+			.then(() => {})
+			.then(initialInvoke)
+			.then(pooling);
+	});
+	onDestroy(() => {
+		connection.stop().then(() => {
+			clearInterval(intervalId);
+		});
+	});
+
+	const initialInvoke = () => {
+		if (connection.state === signalR.HubConnectionState.Connected) {
+			connection.invoke('RealTimePrice', stockResponse?.at(0)?.symbol).then((result) => {
+				realtimePrice = result;
+			});
+		}
+	};
+	const pooling = () => {
+		if (connection.state === signalR.HubConnectionState.Connected) {
+			intervalId = setInterval(() => {
+				connection.invoke('RealTimePrice', stockResponse?.at(0)?.symbol).then((result) => {
+					realtimePrice = result;
+				});
+			}, 4000);
+		}
+	};
 </script>
 
 {#if stockResponse}
@@ -14,7 +53,7 @@
 					</h3>
 					<div class="flex gap-2 items-center">
 						<h6 class="text-neutral-500 text-md tracking-tight">{stockResponse[0].symbol}</h6>
-						<US class="text-lg" />
+						<USFlag class="text-lg" />
 						<h6 class="text-neutral-500 text-md tracking-tight">NASDAQ</h6>
 					</div>
 				</div>

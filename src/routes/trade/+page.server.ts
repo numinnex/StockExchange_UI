@@ -21,7 +21,6 @@ export const actions = {
 				Authorization: `Bearer ${cookies.get('token')}`
 			}
 		});
-		console.log(response.status);
 
 		if (response.ok) {
 			const result: LookUpSucces[] = await response.json();
@@ -31,7 +30,6 @@ export const actions = {
 		}
 		if (response.status == 400) {
 			const result = await response.json();
-			console.log(result[0]);
 			return fail(400, { errors: result[0].message });
 		}
 		return fail(500, { errors: 'Something went wrong' });
@@ -40,7 +38,6 @@ export const actions = {
 	symbol: async ({ request, cookies }) => {
 		const formData = await request.formData();
 		const symbol = formData.get('Symbol');
-		console.log(symbol);
 		if (symbol === '') {
 			return;
 		}
@@ -56,12 +53,10 @@ export const actions = {
 
 		if (response.ok) {
 			const result: StockResponse[] = await response.json();
-			console.log(result);
 			return {
 				stock: result
 			};
 		} else if (response.status == 404) {
-			console.log(await response.json());
 			const result = await response.json();
 			return fail(404, { stockErrors: result });
 		}

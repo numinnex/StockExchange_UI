@@ -44,7 +44,6 @@
 					on:click|stopPropagation={() => {
 						isOpen = false;
 						selectedSymbol = item.symbol;
-						console.log(selectedSymbol);
 						debouncedSubmit(form, 10);
 					}}
 				>
