@@ -18,7 +18,7 @@ type TimeSeriesResponse = {
 	stockValues: StockValuesResponse[];
 };
 
-type StockValuesResponse = {
+export type StockValuesResponse = {
 	close: number;
 	low: number;
 	high: number;

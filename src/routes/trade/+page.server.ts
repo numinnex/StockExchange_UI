@@ -53,6 +53,9 @@ export const actions = {
 
 		if (response.ok) {
 			const result: StockResponse[] = await response.json();
+			result[0].timeSeries.stockValues.map((value) => {
+				value.datetime = new Date(value.datetime);
+			});
 			return {
 				stock: result
 			};

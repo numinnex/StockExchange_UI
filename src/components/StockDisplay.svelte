@@ -1,10 +1,14 @@
 <script lang="ts">
 	import type { StockResponse } from '../contracts/stockContracts';
 	import * as signalR from '@microsoft/signalr';
-	export let stockResponse: StockResponse[] | undefined;
 	import USFlag from '~icons/circle-flags/us';
 	import { baseUrl } from '../routes/baseUrl';
 	import { onDestroy, onMount } from 'svelte';
+	import StockGraph from './StockGraph.svelte';
+
+	export let stockResponse: StockResponse[] | undefined;
+
+	let stockResponseTimeSeries = stockResponse?.at(0)?.timeSeries.stockValues;
 
 	let connection = new signalR.HubConnectionBuilder().withUrl('/price').build();
 	connection.baseUrl = baseUrl.replace('/api/v1', '') + 'price';
@@ -36,7 +40,13 @@
 		if (connection.state === signalR.HubConnectionState.Connected) {
 			intervalId = setInterval(() => {
 				connection.invoke('RealTimePrice', stockResponse?.at(0)?.symbol).then((result) => {
+					let oldValue = realtimePrice;
 					realtimePrice = result;
+					if (oldValue < realtimePrice) {
+						console.log('Price decreased by', realtimePrice - oldValue);
+					} else if (oldValue > realtimePrice) {
+						console.log('Price increased by ', oldValue - realtimePrice);
+					}
 				});
 			}, 4000);
 		}
@@ -46,7 +56,7 @@
 {#if stockResponse}
 	<div class="grid grid-cols-2 gap-6">
 		<div class="">
-			<div class="flex mt-8 mb-6">
+			<div class="flex mb-6">
 				<div>
 					<h3 class="font-bold text-4xl uppercase mb-1 tracking-tighter">
 						{stockResponse[0].name}
@@ -58,9 +68,18 @@
 					</div>
 				</div>
 			</div>
-			<div class="flex mb-6">
-				<p>PLACEHOLDER</p>
-			</div>
+			{#if realtimePrice}
+				<div class="flex mb-6 items-baseline">
+					<div>
+						<span class=" text-4xl font-bold">
+							{realtimePrice}
+						</span>
+					</div>
+					<div>
+						<p class="text-sm font-bold">USD</p>
+					</div>
+				</div>
+			{/if}
 			<div class="grid grid-cols-2 gap-x-6">
 				<div class="hover:bg-neutral-200 p-4 border-b border-neutral-300">
 					<div class="flex justify-between">
@@ -105,18 +124,9 @@
 					</div>
 				</div>
 			</div>
-
-			<!-- <div class="grid grid-cols-2">
-				<div class="w-full">
-					<p>COLUIMN1</p>
-				</div>
-				<div class="w-full">
-					<p>COLUIMN2</p>
-				</div>
-			</div> -->
 		</div>
 		<div>
-			<p>PLACEHOLDER</p>
+			<StockGraph widthInput={850} heightInput={375} timeSeries={stockResponseTimeSeries} />
 		</div>
 	</div>
 {/if}
