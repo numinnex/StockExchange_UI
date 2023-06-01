@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { StockResponse } from '../contracts/stockContracts';
+	import type { StockResponse, StockValuesResponse } from '../contracts/stockContracts';
 	import * as signalR from '@microsoft/signalr';
 	import USFlag from '~icons/circle-flags/us';
 	import { baseUrl } from '../routes/baseUrl';
@@ -126,7 +126,11 @@
 			</div>
 		</div>
 		<div>
-			<StockGraph widthInput={850} heightInput={375} timeSeries={stockResponseTimeSeries} />
+			<StockGraph
+				widthInput={850}
+				heightInput={375}
+				timeSeriesStockResponse={stockResponseTimeSeries}
+			/>
 		</div>
 	</div>
 {/if}
