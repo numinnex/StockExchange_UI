@@ -14,7 +14,7 @@
 	connection.baseUrl = baseUrl.replace('/api/v1', '') + 'price';
 	let intervalId: number;
 
-	let realtimePrice: number;
+	let realtimePrice: number = 125.01;
 
 	onMount(() => {
 		connection
@@ -36,16 +36,29 @@
 			});
 		}
 	};
+
+	let hasDecreased = false;
+	let hasIncreased = false;
+
 	const pooling = () => {
 		if (connection.state === signalR.HubConnectionState.Connected) {
 			intervalId = setInterval(() => {
 				connection.invoke('RealTimePrice', stockResponse?.at(0)?.symbol).then((result) => {
 					let oldValue = realtimePrice;
 					realtimePrice = result;
+
 					if (oldValue < realtimePrice) {
 						console.log('Price decreased by', realtimePrice - oldValue);
+						hasDecreased = true;
+						setTimeout(() => {
+							hasDecreased = false;
+						}, 650);
 					} else if (oldValue > realtimePrice) {
 						console.log('Price increased by ', oldValue - realtimePrice);
+						hasIncreased = true;
+						setTimeout(() => {
+							hasIncreased = false;
+						}, 650);
 					}
 				});
 			}, 4000);
@@ -70,11 +83,17 @@
 			</div>
 			{#if realtimePrice}
 				<div class="flex mb-6 items-baseline">
-					<div>
-						<span class=" text-4xl font-bold">
-							{realtimePrice}
-						</span>
-					</div>
+					<p class="text-4xl font-bold">
+						{#each realtimePrice.toString() as digit, i}
+							{#if i === realtimePrice.toString().length - 1}
+								<span class:text-rose-600={hasIncreased} class:text-lime-600={hasDecreased}>
+									{digit}
+								</span>
+							{:else}
+								{digit}
+							{/if}
+						{/each}
+					</p>
 					<div>
 						<p class="text-sm font-bold">USD</p>
 					</div>
@@ -128,9 +147,12 @@
 		<div>
 			<StockGraph
 				widthInput={850}
-				heightInput={375}
+				heightInput={313}
 				timeSeriesStockResponse={stockResponseTimeSeries}
 			/>
 		</div>
 	</div>
 {/if}
+
+<style>
+</style>

@@ -95,15 +95,6 @@ export function drawGraph(
 			.call((g: any) => g.select('.domain').remove())
 			.call((g: any) =>
 				g.selectAll('.tick line').clone().attr('x2', width).attr('stroke-opacity', 0.1)
-			)
-			.call((g: any) =>
-				g
-					.append('text')
-					.attr('x', -margin.left)
-					.attr('y', -11)
-					.attr('fill', 'currentColor')
-					.attr('text-anchor', 'start')
-					.text('Price ($)')
 			);
 
 		const colors = ['stroke-lime-500', '#999999', 'stroke-red-500'];
@@ -119,6 +110,7 @@ export function drawGraph(
 					.ticks(width / 60)
 			)
 			.call((g: any) => g.select('.domain').remove());
+		svg.selectAll('text').attr('class', 'text-neutral-500');
 
 		const g = svg
 			.append('g')
@@ -149,9 +141,9 @@ export function drawGraph(
 			.attr('y2', (i: any) => y(high[i]))
 			.attr('stroke-width', 0)
 			.transition()
-			.delay(100)
+			.delay(150)
 			.attr('stroke-width', fitValueInRange(date.length, 1, 750, 2, 1))
-			.duration(1000);
+			.duration(1250);
 
 		g.append('line')
 			.attr('y1', (i: any) => y(open[i]))
@@ -160,9 +152,9 @@ export function drawGraph(
 			.attr('stroke', (i: any) => colors[1 + Math.sign(open[i] - close[i])])
 			.attr('class', (i: any) => colors[1 + Math.sign(open[i] - close[i])])
 			.transition()
-			.delay(100)
+			.delay(150)
 			.attr('stroke-width', fitValueInRange(date.length, 1, 750, 2, 1))
-			.duration(1000);
+			.duration(1250);
 	} //@ts-ignore
 }
 
