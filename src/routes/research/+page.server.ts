@@ -21,6 +21,7 @@ export const actions = {
 				Authorization: `Bearer ${cookies.get('token')}`
 			}
 		});
+
 		if (response.ok) {
 			const result: LookUpSucces[] = await response.json();
 			return {
@@ -33,10 +34,10 @@ export const actions = {
 		}
 		return fail(500, { errors: 'Something went wrong' });
 	},
+
 	symbol: async ({ request, cookies }) => {
 		const formData = await request.formData();
 		const symbol = formData.get('Symbol');
-		console.log(symbol);
 		if (symbol === '') {
 			return;
 		}
@@ -52,7 +53,9 @@ export const actions = {
 
 		if (response.ok) {
 			const result: StockResponse[] = await response.json();
-			console.log(result);
+			result[0].timeSeries.stockValues.map((value) => {
+				value.datetime = new Date(value.datetime);
+			});
 			return {
 				stock: result
 			};

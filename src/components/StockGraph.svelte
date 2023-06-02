@@ -8,10 +8,6 @@
 	export let timeSeriesStockResponse: StockValuesResponse[] | undefined;
 
 	let numberOfDaysToSubtract = 479;
-
-	//this is xFormat for time series above one year
-	//const xFormat = '%b %Y';
-	//this is xFormat for time series within a year
 	let xFormat = '%b %Y ';
 	let timeSeries = timeSeriesStockResponse;
 
@@ -48,45 +44,55 @@
 </script>
 
 <div class="flex gap-4 mb-3 text-sm">
-	<button
+	<div
 		class:text-indigo-500={numberOfDaysToSubtract === 10}
 		class:bg-indigo-100={numberOfDaysToSubtract === 10}
-		class="rounded-md hover:bg-neutral-100 px-3 py-1"
+		class="rounded-md hover:bg-neutral-100 px-3 py-1 cursor-pointer"
 		on:click={() => {
 			filterData(10);
-		}}>1W</button
+		}}
 	>
-	<button
+		1W
+	</div>
+	<div
 		class:text-indigo-500={numberOfDaysToSubtract === 40}
 		class:bg-indigo-100={numberOfDaysToSubtract === 40}
-		class="rounded-md hover:bg-neutral-100 px-3 py-1"
+		class="rounded-md hover:bg-neutral-100 px-3 py-1 cursor-pointer"
 		on:click={() => {
 			filterData(40);
-		}}>1M</button
+		}}
 	>
-	<button
+		1M
+	</div>
+	<div
 		class:text-indigo-500={numberOfDaysToSubtract === 240}
 		class:bg-indigo-100={numberOfDaysToSubtract === 240}
-		class="rounded-md hover:bg-neutral-100 px-3 py-1"
+		class="rounded-md hover:bg-neutral-100 px-3 py-1 cursor-pointer"
 		on:click={() => {
 			filterData(240);
-		}}>6M</button
+		}}
 	>
-	<button
+		6M
+	</div>
+	<div
 		class:text-indigo-500={numberOfDaysToSubtract === 479}
 		class:bg-indigo-100={numberOfDaysToSubtract === 479}
-		class="rounded-md hover:bg-neutral-100 px-3 py-1"
+		class="rounded-md hover:bg-neutral-100 px-3 py-1 cursor-pointer"
 		on:click={() => {
 			filterData(479);
-		}}>1Y</button
+		}}
 	>
-	<button
+		1Y
+	</div>
+	<div
 		class:text-indigo-500={numberOfDaysToSubtract === 2000}
 		class:bg-indigo-100={numberOfDaysToSubtract === 2000}
-		class="rounded-md hover:bg-neutral-100 px-3 py-1"
+		class="rounded-md hover:bg-neutral-100 px-3 py-1 cursor-pointer"
 		on:click={() => {
 			filterData(2000);
-		}}>3Y</button
+		}}
 	>
+		3Y
+	</div>
 </div>
 <div id="chart-container" />

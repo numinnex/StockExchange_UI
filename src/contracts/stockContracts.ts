@@ -1,4 +1,5 @@
 export type StockResponse = {
+	id: string;
 	symbol: string;
 	name: string;
 	price: number;

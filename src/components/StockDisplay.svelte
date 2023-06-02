@@ -32,7 +32,7 @@
 	const initialInvoke = () => {
 		if (connection.state === signalR.HubConnectionState.Connected) {
 			connection.invoke('RealTimePrice', stockResponse?.at(0)?.symbol).then((result) => {
-				realtimePrice = result;
+				realtimePrice = Math.round(result * 100) / 100;
 			});
 		}
 	};
@@ -45,16 +45,14 @@
 			intervalId = setInterval(() => {
 				connection.invoke('RealTimePrice', stockResponse?.at(0)?.symbol).then((result) => {
 					let oldValue = realtimePrice;
-					realtimePrice = result;
+					realtimePrice = Math.round(result * 100) / 100;
 
 					if (oldValue < realtimePrice) {
-						console.log('Price decreased by', realtimePrice - oldValue);
 						hasDecreased = true;
 						setTimeout(() => {
 							hasDecreased = false;
 						}, 650);
 					} else if (oldValue > realtimePrice) {
-						console.log('Price increased by ', oldValue - realtimePrice);
 						hasIncreased = true;
 						setTimeout(() => {
 							hasIncreased = false;

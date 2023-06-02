@@ -2,6 +2,7 @@ import type { LookUpSucces } from '../../contracts/lookupContracts';
 import type { StockResponse } from '../../contracts/stockContracts';
 import { baseUrl } from '../baseUrl';
 import { fail, type Actions } from '@sveltejs/kit';
+import jwt_decode from 'jwt-decode';
 
 export const actions = {
 	search: async ({ request, cookies }) => {
@@ -62,6 +63,123 @@ export const actions = {
 		} else if (response.status == 404) {
 			const result = await response.json();
 			return fail(404, { stockErrors: result });
+		}
+	},
+	order: async ({ request, cookies }) => {
+		const formData = await request.formData();
+
+		const quantity = formData.get('quantity');
+		const isBuy = formData.get('action');
+		const orderType = formData.get('ordertype');
+		const stockId = formData.get('stockId');
+		const stopPrice = formData.get('stopprice');
+
+		const url = baseUrl + 'order/';
+		const token = cookies.get('token');
+		let userId: string = '';
+		if (token !== undefined) {
+			const decoded = jwt_decode(token);
+			//@ts-ignore
+			userId = decoded.sub;
+		}
+
+		if (isBuy === 'Buy') {
+			if (orderType === 'Market') {
+				const body = JSON.stringify({
+					isBuy: true,
+					stockId: stockId,
+					userId: userId,
+					quantity: quantity
+				});
+				const response = await fetch(url + 'ordermarketquantity', {
+					body,
+					method: 'POST',
+					headers: {
+						'content-type': 'application/json',
+						Authorization: `Bearer ${token}`
+					}
+				});
+				const result = await response.json();
+				if (response.status === 400) {
+					return fail(400, { orderErrors: result });
+				}
+				if (response.ok) {
+					console.log(await response.json());
+				}
+			} else if (orderType === 'Stop') {
+				const body = JSON.stringify({
+					isBuy: true,
+					stockId: stockId,
+					userId: userId,
+					stopPrice: stopPrice,
+					quantity: quantity
+				});
+				const response = await fetch(url + 'stoporderquantity', {
+					body,
+					method: 'POST',
+					headers: {
+						'content-type': 'application/json',
+						Authorization: `Bearer ${token}`
+					}
+				});
+				const result = await response.json();
+				if (response.status === 400) {
+					return fail(400, { orderErrors: result });
+				}
+				if (!response.ok) {
+				}
+
+				if (response.ok) {
+					console.log(await response.json());
+				}
+			}
+		} else {
+			if (orderType === 'Market') {
+				const body = JSON.stringify({
+					isBuy: false,
+					stockId: stockId,
+					userId: userId,
+					quantity: quantity
+				});
+				const response = await fetch(url + 'ordermarketquantity', {
+					body,
+					method: 'POST',
+					headers: {
+						'content-type': 'application/json',
+						Authorization: `Bearer ${token}`
+					}
+				});
+				const result = await response.json();
+				if (response.status === 400) {
+					return fail(400, { orderErrors: result });
+				}
+				if (response.ok) {
+					console.log(await response.json());
+				}
+			} else if (orderType === 'Stop') {
+				const body = JSON.stringify({
+					isBuy: false,
+					stockId: stockId,
+					userId: userId,
+					stopPrice: stopPrice,
+					quantity: quantity
+				});
+				const response = await fetch(url + 'stoporderquantity', {
+					body,
+					method: 'POST',
+					headers: {
+						'content-type': 'application/json',
+						Authorization: `Bearer ${token}`
+					}
+				});
+				const result = await response.json();
+				if (response.status === 400) {
+					return fail(400, { orderErrors: result });
+				}
+				if (response.ok) {
+					console.log(await response.json());
+				}
+			}
 		}
 	}
 } satisfies Actions;

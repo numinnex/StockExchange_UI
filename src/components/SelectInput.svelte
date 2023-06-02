@@ -21,9 +21,10 @@
 		selectedOption = option;
 		isOpen = false;
 	}
+	console.log(label.toLowerCase().replace(' ', ''));
 </script>
 
-<label for={label.replace(' ', '')} class="block text-sm mb-2">{label}</label>
+<label for={label.toLowerCase().replace(' ', '')} class="block text-sm mb-2">{label}</label>
 <div class="relative">
 	<div class="w-full">
 		<div
@@ -35,6 +36,12 @@
 				<path fill-rule="evenodd" d="M6 8l4 4 4-4H6z" />
 			</svg>
 		</div>
+		<input
+			type="text"
+			name={label.toLowerCase().replace(' ', '')}
+			hidden
+			bind:value={selectedOption}
+		/>
 
 		{#if isOpen}
 			<div
@@ -45,12 +52,13 @@
 			>
 				{#each options as option}
 					{#if option === selectedOption}
-						<input
-							type="text"
-							value={option}
+						<div
+							id={label}
 							class="p-3 cursor-pointer bg-indigo-200 text-indigo-700 w-full"
 							on:click={() => selectOption(option)}
-						/>
+						>
+							{option}
+						</div>
 					{:else}
 						<div
 							class="p-3 cursor-pointer hover:bg-gray-100 w-full"

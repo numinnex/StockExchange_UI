@@ -16,7 +16,7 @@
 	type="number"
 	step="0.1"
 	id={label}
-	name={label.toLowerCase()}
+	name={label.toLowerCase().replace(' ', '')}
 	min="0"
 	bind:value={initValue}
 	inputmode="decimal"
