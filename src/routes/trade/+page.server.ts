@@ -1,10 +1,16 @@
+import type { PageServerLoad } from '../$types';
 import type { LookUpSucces } from '../../contracts/lookupContracts';
 import type { StockResponse } from '../../contracts/stockContracts';
 import { baseUrl } from '../baseUrl';
-import { fail, type Actions } from '@sveltejs/kit';
+import { fail, type Actions, redirect } from '@sveltejs/kit';
 import jwt_decode from 'jwt-decode';
 
-export const actions = {
+export const load: PageServerLoad = async ({ locals }) => {
+	if (!locals.user) {
+		throw redirect(303, '/login');
+	}
+};
+export const actions: Actions = {
 	search: async ({ request, cookies }) => {
 		const formData = await request.formData();
 		const symbol = formData.get('Symbol');
@@ -91,30 +97,7 @@ export const actions = {
 					userId: userId,
 					quantity: quantity
 				});
-				const response = await fetch(url + 'ordermarketquantity', {
-					body,
-					method: 'POST',
-					headers: {
-						'content-type': 'application/json',
-						Authorization: `Bearer ${token}`
-					}
-				});
-				const result = await response.json();
-				if (response.status === 400) {
-					return fail(400, { orderErrors: result });
-				}
-				if (response.ok) {
-					console.log(await response.json());
-				}
-			} else if (orderType === 'Stop') {
-				const body = JSON.stringify({
-					isBuy: true,
-					stockId: stockId,
-					userId: userId,
-					stopPrice: stopPrice,
-					quantity: quantity
-				});
-				const response = await fetch(url + 'stoporderquantity', {
+				const response = await fetch(url + 'market/quantity', {
 					body,
 					method: 'POST',
 					headers: {
@@ -127,10 +110,36 @@ export const actions = {
 					return fail(400, { orderErrors: result });
 				}
 				if (!response.ok) {
+					return fail(500, { errors: 'Something went wrong' });
+				}
+				if (response.ok) {
+				}
+			} else if (orderType === 'Stop') {
+				const body = JSON.stringify({
+					isBuy: true,
+					stockId: stockId,
+					userId: userId,
+					stopPrice: stopPrice,
+					quantity: quantity
+				});
+				const response = await fetch(url + 'stop/quantity', {
+					body,
+					method: 'POST',
+					headers: {
+						'content-type': 'application/json',
+						Authorization: `Bearer ${token}`
+					}
+				});
+				const result = await response.json();
+				if (response.status === 400) {
+					return fail(400, { orderErrors: result });
+				}
+				if (!response.ok) {
+					return fail(500, { errors: 'Something went wrong' });
 				}
 
 				if (response.ok) {
-					console.log(await response.json());
+					return;
 				}
 			}
 		} else {
@@ -141,7 +150,7 @@ export const actions = {
 					userId: userId,
 					quantity: quantity
 				});
-				const response = await fetch(url + 'ordermarketquantity', {
+				const response = await fetch(url + '/market/quantity', {
 					body,
 					method: 'POST',
 					headers: {
@@ -153,8 +162,11 @@ export const actions = {
 				if (response.status === 400) {
 					return fail(400, { orderErrors: result });
 				}
+				if (!response.ok) {
+					return fail(500, { errors: 'Something went wrong' });
+				}
 				if (response.ok) {
-					console.log(await response.json());
+					return;
 				}
 			} else if (orderType === 'Stop') {
 				const body = JSON.stringify({
@@ -164,7 +176,7 @@ export const actions = {
 					stopPrice: stopPrice,
 					quantity: quantity
 				});
-				const response = await fetch(url + 'stoporderquantity', {
+				const response = await fetch(url + 'stop/quantity', {
 					body,
 					method: 'POST',
 					headers: {
@@ -176,8 +188,11 @@ export const actions = {
 				if (response.status === 400) {
 					return fail(400, { orderErrors: result });
 				}
+				if (!response.ok) {
+					return fail(500, { errors: 'Something went wrong' });
+				}
 				if (response.ok) {
-					console.log(await response.json());
+					return;
 				}
 			}
 		}

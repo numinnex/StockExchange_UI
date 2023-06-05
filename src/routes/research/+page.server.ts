@@ -1,8 +1,14 @@
+import type { PageServerLoad } from '../$types';
 import type { LookUpFailure, LookUpSucces } from '../../contracts/lookupContracts';
 import type { StockResponse } from '../../contracts/stockContracts';
 import { baseUrl } from '../baseUrl';
-import { fail, type Actions } from '@sveltejs/kit';
+import { fail, type Actions, redirect } from '@sveltejs/kit';
 
+export const load: PageServerLoad = async ({ locals }) => {
+	if (!locals.user) {
+		throw redirect(303, '/login');
+	}
+};
 export const actions = {
 	search: async ({ request, cookies }) => {
 		const formData = await request.formData();
