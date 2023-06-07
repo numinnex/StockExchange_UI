@@ -1,9 +1,10 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import { page } from '$app/stores';
-	export let data: PageData;
 	import USFlag from '~icons/circle-flags/us';
 	import SortTag from '~icons/bx/sort';
+
+	export let data: PageData;
 
 	interface Trade {
 		symbol: string;
@@ -12,20 +13,22 @@
 		orderAmount: number;
 		price: number;
 	}
-
-	let trades: Trade[] = data.trades.data;
+	let trades: Trade[];
+	if (data.trades) {
+		trades = data.trades.data;
+	}
 	let currentSortColumn: keyof Trade = 'symbol';
-	let sortAscending = false; // Track the current sorting order
+	let sortAscending = false;
 
 	function sortBy(property: keyof Trade) {
 		if (currentSortColumn === property) {
-			sortAscending = !sortAscending; // Invert the sorting order for the same column
+			sortAscending = !sortAscending;
 		} else {
-			currentSortColumn = property; // Update the current sort column
+			currentSortColumn = property;
 			if (!sortAscending) {
-				sortAscending = !sortAscending; // Reset the sorting order to ascending for a new column
+				sortAscending = !sortAscending;
 			}
-			sortAscending = false; // Reset the sorting order to ascending for a new column
+			sortAscending = false;
 		}
 		console.log(currentSortColumn, sortAscending);
 
@@ -35,7 +38,6 @@
 			const sortOrder = sortAscending ? 1 : -1;
 			return sortOrder * (bValue > aValue ? 1 : -1);
 		});
-
 		trades = trades;
 	}
 	const options: Intl.DateTimeFormatOptions = {
@@ -108,8 +110,8 @@
 										<span>Order Amount</span>
 										<SortTag
 											class={currentSortColumn === 'orderAmount'
-												? 'text-xs text-lime-500'
-												: 'text-xs text-indigo-400'}
+												? 'text-sm text-lime-500'
+												: 'text-sm text-indigo-400'}
 										/>
 									</div>
 								</th>
@@ -121,8 +123,8 @@
 										<span>Price</span>
 										<SortTag
 											class={currentSortColumn === 'price'
-												? 'text-xs text-lime-500'
-												: 'text-xs text-indigo-400'}
+												? 'text-sm text-lime-500'
+												: 'text-sm text-indigo-400'}
 										/>
 									</div>
 								</th>

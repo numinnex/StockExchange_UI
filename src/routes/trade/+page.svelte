@@ -33,7 +33,16 @@
 
 <div class="px-11">
 	<p class="text-white uppercase text-xs tracking-widest mb-2">Symbol Lookup</p>
-	<form class="bg-white p-4" method="POST" action="?/order" use:enhance>
+	<form
+		class="bg-white p-4"
+		method="POST"
+		action="?/order"
+		use:enhance={() => {
+			return async ({ update }) => {
+				update({ reset: false });
+			};
+		}}
+	>
 		<input name="stockId" type="text" value={form?.stock?.at(0)?.id} hidden />
 		<div class="mb-6">
 			<SearchInput {...searchProps} bind:searchVal>

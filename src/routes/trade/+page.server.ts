@@ -18,7 +18,6 @@ export const actions: Actions = {
 			return;
 		}
 		const body = JSON.stringify({ symbol });
-
 		const url = baseUrl + 'stock/lookup';
 		const response = await fetch(url, {
 			body,
@@ -73,7 +72,6 @@ export const actions: Actions = {
 	},
 	order: async ({ request, cookies }) => {
 		const formData = await request.formData();
-
 		const quantity = formData.get('quantity');
 		const isBuy = formData.get('action');
 		const orderType = formData.get('ordertype');
@@ -150,7 +148,7 @@ export const actions: Actions = {
 					userId: userId,
 					quantity: quantity
 				});
-				const response = await fetch(url + '/market/quantity', {
+				const response = await fetch(url + 'market/quantity', {
 					body,
 					method: 'POST',
 					headers: {
@@ -158,6 +156,7 @@ export const actions: Actions = {
 						Authorization: `Bearer ${token}`
 					}
 				});
+				console.log(response.status);
 				const result = await response.json();
 				if (response.status === 400) {
 					return fail(400, { orderErrors: result });

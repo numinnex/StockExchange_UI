@@ -29,7 +29,7 @@ export const actions = {
 			cookies.set('token', data.token, { path: '/' });
 			cookies.set('refreshtoken', data.refreshToken, { path: '/' });
 
-			throw redirect(301, '/portfolio');
+			throw redirect(301, '/');
 		}
 
 		if (response.status == 400) {

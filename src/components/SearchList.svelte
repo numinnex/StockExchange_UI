@@ -6,7 +6,7 @@
 	function handleSubmit() {
 		//@ts-ignore
 		return async ({ update }) => {
-			await update();
+			await update({ reset: false });
 		};
 	}
 	const debouncedSubmit = createDebouncedSubmit(10);
