@@ -1,6 +1,5 @@
 <script lang="ts">
 	import {
-		scaleTime,
 		scaleLinear,
 		line,
 		extent,
@@ -8,16 +7,34 @@
 		select,
 		axisBottom,
 		axisLeft,
-		utcFormat
+		utcFormat,
+		scaleUtc,
+		curveMonotoneX,
+		map,
+		min
 	} from 'd3';
 	import { onMount } from 'svelte';
+	import type { PageData } from './$types';
 
-	const data = [
-		{ date: new Date('2023-06-01'), value: 1000 },
-		{ date: new Date('2023-06-02'), value: 1500 },
-		{ date: new Date('2023-06-03'), value: 1200 }
-		// Add more data points as needed
-	];
+	type valueSnapshot = {
+		timestamp: Date;
+		value: number;
+	};
+	type portfolio = {
+		valueSnapshots: valueSnapshot[];
+		totalValue: number;
+	};
+	type security = {
+		symbol: string;
+		quantity: number;
+		currentPrice: number;
+		purchasedPrice: number;
+		totalValue: number;
+	};
+
+	export let data: PageData;
+	const portfolioData: portfolio = data.portfolio;
+	const securities: security[] = data.securities;
 
 	const margin = { top: 20, right: 20, bottom: 30, left: 50 };
 	const width = 1200 - margin.left - margin.right;
@@ -28,23 +45,31 @@
 			.attr('width', width + margin.left + margin.right)
 			.attr('height', height + margin.top + margin.bottom);
 
-		const xScale = scaleTime()
-			.domain(extent(data, (d: { date: Date }) => d.date) as [Date, Date])
+		const xScale = scaleUtc()
+			.domain(
+				extent(portfolioData.valueSnapshots, (d: { timestamp: Date }) => d.timestamp) as [
+					Date,
+					Date
+				]
+			)
 			.range([0, width]);
 
 		const yScale = scaleLinear()
-			.domain([0, max(data, (d) => d.value) || 0])
+			.domain(
+				extent(portfolioData.valueSnapshots, (d: { value: number }) => d.value) as [number, number]
+			)
 			.range([height, 0]);
 
-		const lineGenerator = line<{ date: Date; value: number }>()
-			.x((d) => xScale(d.date))
+		const lineGenerator = line<valueSnapshot>()
+			.curve(curveMonotoneX)
+			.x((d) => xScale(d.timestamp))
 			.y((d) => yScale(d.value));
 
 		const chart = svg.append('g').attr('transform', `translate(${margin.left}, ${margin.top})`);
 
 		chart
 			.append('path')
-			.datum(data)
+			.datum(portfolioData.valueSnapshots)
 			.attr('fill', 'none')
 			.attr('stroke', 'steelblue')
 			.attr('stroke-width', 2)
@@ -54,22 +79,25 @@
 			.append('g')
 			.attr('transform', `translate(0, ${height})`)
 			//@ts-ignore
-			.call(axisBottom(xScale).tickFormat(utcFormat('%Y-%m-%d')))
+			.call(
+				axisBottom(xScale)
+					//@ts-ignore
+					.tickFormat(utcFormat('%d %m %y'))
+					.ticks(portfolioData.valueSnapshots.length)
+			)
+			.call((g) => g.select('.domain').remove())
 			.call((g: any) =>
 				g.selectAll('.tick line').clone().attr('y2', -height).attr('stroke-opacity', 0.1)
 			);
 
 		chart
 			.append('g')
-			.call(axisLeft(yScale))
+			.call(axisLeft(yScale).ticks(height / 40))
+			.call((g) => g.select('.domain').remove())
 			.call((g: any) =>
 				g.selectAll('.tick line').clone().attr('x2', width).attr('stroke-opacity', 0.1)
 			);
 	});
-
-	function tickSize(height: number) {
-		throw new Error('Function not implemented.');
-	}
 </script>
 
 <svelte:head>
@@ -77,13 +105,39 @@
 	<meta name="description" content="Stock Exchange" />
 </svelte:head>
 <div class="px-11">
-	<div class="grid grid-cols-4 gap-4">
+	<div class="grid grid-cols-4 gap-4 mb-4">
 		<div class="col-span-1 bg-white p-2 text-center">
 			<div class="text-xs text-neutral-500 tracking-widest mb-1">ACCOUNT VALUE</div>
-			<span class="font-bold text-black text-2xl">$1,234.56</span>
+			<span class="font-bold text-black text-2xl">{portfolioData.totalValue}$<span /></span>
 		</div>
 		<div class="col-span-3 bg-white p-2">
 			<svg id="chart" />
 		</div>
 	</div>
+	<div class="bg-white py-2">
+		<table class="min-w-full divide-y divide-neutral-200">
+			<thead>
+				<tr class="hover:bg-neutral-200 tracking-tighter">
+					<th class="px-6 py-3 text-left text-neutral-400 text-xs font-semibold">Symbol</th>
+					<th class="px-6 py-3 text-left text-neutral-400 text-xs font-semibold">Current Price</th>
+					<th class="px-6 py-3 text-left text-neutral-400 text-xs font-semibold">Purchase Price</th>
+					<th class="px-6 py-3 text-left text-neutral-400 text-xs font-semibold">QTY</th>
+					<th class="px-6 py-3 text-left text-neutral-400 text-xs font-semibold">Total Value</th>
+				</tr>
+			</thead>
+			<tbody>
+				{#each securities as security}
+					<tr class="hover:bg-neutral-200 text-left">
+						<td class="px-6 py-3 text-indigo-400 font-light tracking-tighter">{security.symbol}</td>
+						<td class="px-6 py-2 text-sm font-semibold">${security.currentPrice}</td>
+						<td class="px-6 py-2 text-sm font-semibold">${security.purchasedPrice}</td>
+						<td class="px-6 py-2 text-sm font-semibold">{security.quantity}</td>
+						<td class="px-6 py-2 text-sm font-semibold">${security.totalValue}</td>
+					</tr>
+				{/each}
+				<!-- Add more rows here -->
+			</tbody>
+		</table>
+	</div>
+	<div />
 </div>
