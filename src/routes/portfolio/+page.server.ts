@@ -13,15 +13,7 @@ export const load: PageServerLoad = async ({ locals, cookies, fetch }) => {
 		const userId = decoded.sub;
 		let url = baseUrl + `portfolio/${userId}`;
 
-		const responsePortfolio = await fetch(url, {
-			method: 'GET',
-			headers: {
-				'content-type': 'application/json',
-				Authorization: `Bearer ${token}`
-			}
-		});
-		url = baseUrl + `portfolio/securities/${userId}`;
-		const responseSecurities = await fetch(url, {
+		const response = await fetch(url, {
 			method: 'GET',
 			headers: {
 				'content-type': 'application/json',
@@ -29,24 +21,20 @@ export const load: PageServerLoad = async ({ locals, cookies, fetch }) => {
 			}
 		});
 
-		let resultFolio = null;
-		let resultSecurities = null;
-
-		if (responsePortfolio.ok) {
-			resultFolio = await responsePortfolio.json();
-			resultFolio.valueSnapshots.map((x: any) => {
+		if (response.ok) {
+			const result = await response.json();
+			console.log(result);
+			if (result.securities) {
+				result.securities.map((x: any) => {
+					x.timestamp = new Date(x.timestamp);
+				});
+			}
+			result.valueSnapshots.map((x: any) => {
 				x.timestamp = new Date(x.timestamp);
 			});
-			console.log(resultFolio);
+			return {
+				portfolio: result
+			};
 		}
-		if (responseSecurities.ok) {
-			resultSecurities = await responseSecurities.json();
-			console.log(resultSecurities);
-		}
-
-		return {
-			portfolio: resultFolio,
-			securities: resultSecurities
-		};
 	}
 };

@@ -22,11 +22,13 @@
 	};
 	type portfolio = {
 		valueSnapshots: valueSnapshot[];
+		securities: security[];
 		totalValue: number;
 	};
 	type security = {
 		symbol: string;
 		quantity: number;
+		timeStamp: Date;
 		currentPrice: number;
 		purchasedPrice: number;
 		totalValue: number;
@@ -34,7 +36,7 @@
 
 	export let data: PageData;
 	const portfolioData: portfolio = data.portfolio;
-	const securities: security[] = data.securities;
+	const securities: security[] = data.portfolio.securities;
 
 	const margin = { top: 20, right: 20, bottom: 30, left: 50 };
 	const width = 1200 - margin.left - margin.right;

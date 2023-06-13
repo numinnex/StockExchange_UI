@@ -4,7 +4,7 @@ import { baseUrl } from './baseUrl';
 export const load: PageServerLoad = async ({ fetch, cookies }) => {
 	const token = cookies.get('token');
 	const pageNumber = 1;
-	const pageSize = 5;
+	const pageSize = 25;
 	const url = baseUrl + `order/active?pageNumber=${pageNumber}&pageSize=${pageSize}`;
 	console.log(url);
 	const response = await fetch(url + '', {

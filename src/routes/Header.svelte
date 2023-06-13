@@ -7,10 +7,7 @@
 		text: string;
 		href: string;
 	}
-	let activeTab: string;
-	onMount(() => {
-		activeTab = $page.url.pathname;
-	});
+	$: activeTab = $page.url.pathname;
 
 	export let links: NavLink[] = [];
 

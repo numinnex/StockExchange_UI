@@ -9,6 +9,7 @@
 	interface Trade {
 		symbol: string;
 		timestamp: Date;
+		isBuy: boolean;
 		openQuantity: number;
 		orderAmount: number;
 		price: number;
@@ -78,6 +79,19 @@
 								</th>
 								<th
 									class="cursor-pointer hover:bg-neutral-100 text-sm font-thin p-4 border"
+									on:click={() => sortBy('isBuy')}
+								>
+									<div class="flex justify-center items-center gap-1">
+										<span>ACTION</span>
+										<SortTag
+											class={currentSortColumn === 'isBuy'
+												? 'text-sm text-lime-500'
+												: 'text-sm text-indigo-400'}
+										/>
+									</div>
+								</th>
+								<th
+									class="cursor-pointer hover:bg-neutral-100 text-sm font-thin p-4 border"
 									on:click={() => sortBy('timestamp')}
 								>
 									<div class="flex justify-center items-center gap-1">
@@ -137,6 +151,7 @@
 										<USFlag class="text-lg" />
 										{trade.symbol}
 									</td>
+									<td class="border-b text-center">{trade.isBuy ? 'Buy' : 'Sell'}</td>
 									<td class="border-b text-center"
 										>{new Date(trade.timestamp).toLocaleDateString('en-US', options)}</td
 									>

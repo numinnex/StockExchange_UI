@@ -14,7 +14,7 @@
 	connection.baseUrl = baseUrl.replace('/api/v1', '') + 'price';
 	let intervalId: number;
 
-	let realtimePrice: number = 125.01;
+	let realtimePrice: number = 0.0;
 
 	onMount(() => {
 		connection

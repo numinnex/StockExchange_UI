@@ -111,6 +111,7 @@ export const actions: Actions = {
 					return fail(500, { errors: 'Something went wrong' });
 				}
 				if (response.ok) {
+					throw redirect(303, '/portfolio');
 				}
 			} else if (orderType === 'Stop') {
 				const body = JSON.stringify({
@@ -137,7 +138,7 @@ export const actions: Actions = {
 				}
 
 				if (response.ok) {
-					return;
+					throw redirect(303, '/portfolio');
 				}
 			}
 		} else {
@@ -165,7 +166,7 @@ export const actions: Actions = {
 					return fail(500, { errors: 'Something went wrong' });
 				}
 				if (response.ok) {
-					return;
+					throw redirect(303, '/portfolio');
 				}
 			} else if (orderType === 'Stop') {
 				const body = JSON.stringify({
@@ -191,7 +192,7 @@ export const actions: Actions = {
 					return fail(500, { errors: 'Something went wrong' });
 				}
 				if (response.ok) {
-					return;
+					throw redirect(303, '/portfolio');
 				}
 			}
 		}
