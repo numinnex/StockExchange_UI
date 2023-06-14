@@ -1,6 +1,7 @@
 <script lang="ts">
 	import '../app.css';
 	import Header from './Header.svelte';
+	import Home from '~icons/carbon/home';
 
 	const navLinks = [
 		{ text: 'PORTFOLIO', href: '/portfolio' },

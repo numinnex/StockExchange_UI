@@ -6,7 +6,6 @@ export const load: PageServerLoad = async ({ fetch, cookies }) => {
 	const pageNumber = 1;
 	const pageSize = 25;
 	const url = baseUrl + `order/active?pageNumber=${pageNumber}&pageSize=${pageSize}`;
-	console.log(url);
 	const response = await fetch(url + '', {
 		method: 'GET',
 		headers: {
@@ -17,7 +16,6 @@ export const load: PageServerLoad = async ({ fetch, cookies }) => {
 	let result = undefined;
 	if (response.ok) {
 		result = await response.json();
-		console.log(result);
 		return {
 			trades: result
 		};

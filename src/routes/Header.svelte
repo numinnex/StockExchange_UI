@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import Ripple from '../ripple/index';
-	import { onMount } from 'svelte';
+	import Home from '~icons/carbon/home';
 
 	interface NavLink {
 		text: string;
@@ -18,6 +18,21 @@
 
 <nav class="flex items-center justify-between px-14 border-b">
 	<div class="flex items-center">
+		<a
+			href="/"
+			class={activeTab === '/'
+				? 'active-link text-white text-xl px-9 py-3'
+				: 'text-white hover:bg-[#3A425D] text-xl px-9 py-3'}
+			on:click={() => handleClick('/')}
+			use:Ripple={{
+				centerd: false,
+				color: '#fff',
+				spreadingDuration: '.3s',
+				opacity: 0.2
+			}}
+		>
+			<Home />
+		</a>
 		{#each links as link}
 			<a
 				href={link.href}

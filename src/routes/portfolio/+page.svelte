@@ -11,7 +11,8 @@
 		scaleUtc,
 		curveMonotoneX,
 		map,
-		min
+		min,
+		type RatioSquarifyTilingFactory
 	} from 'd3';
 	import { onMount } from 'svelte';
 	import type { PageData } from './$types';
@@ -34,9 +35,19 @@
 		totalValue: number;
 	};
 
+	type trade = {
+		symbol: string;
+		quantity: number;
+		price: number;
+		timestamp: Date;
+		orderAmount: number;
+		isBuy: boolean;
+		type: string;
+	};
 	export let data: PageData;
 	const portfolioData: portfolio = data.portfolio;
 	const securities: security[] = data.portfolio.securities;
+	const trades: trade[] = data.trades;
 
 	const margin = { top: 20, right: 20, bottom: 30, left: 50 };
 	const width = 1200 - margin.left - margin.right;
@@ -116,7 +127,8 @@
 			<svg id="chart" />
 		</div>
 	</div>
-	<div class="bg-white py-2">
+	<p class="text-xs text-white mb-1 tracking-widest">SECURITIES</p>
+	<div class="bg-white py-2 mb-2">
 		<table class="min-w-full divide-y divide-neutral-200">
 			<thead>
 				<tr class="hover:bg-neutral-200 tracking-tighter">
@@ -137,7 +149,35 @@
 						<td class="px-6 py-2 text-sm font-semibold">${security.totalValue}</td>
 					</tr>
 				{/each}
-				<!-- Add more rows here -->
+			</tbody>
+		</table>
+	</div>
+	<p class="text-xs text-white mb-2 tracking-widest">TRADES</p>
+	<div class="bg-white py-2">
+		<table class="min-w-full divide-y divide-neutral-200">
+			<thead>
+				<tr class="hover:bg-neutral-200 tracking-tighter">
+					<th class="px-6 py-3 text-left text-neutral-400 text-xs font-semibold">Symbol</th>
+					<th class="px-6 py-3 text-left text-neutral-400 text-xs font-semibold">Timestamp</th>
+					<th class="px-6 py-3 text-left text-neutral-400 text-xs font-semibold">Price</th>
+					<th class="px-6 py-3 text-left text-neutral-400 text-xs font-semibold">OrderAmount</th>
+					<th class="px-6 py-3 text-left text-neutral-400 text-xs font-semibold">QTY</th>
+					<th class="px-6 py-3 text-left text-neutral-400 text-xs font-semibold">Type</th>
+					<th class="px-6 py-3 text-left text-neutral-400 text-xs font-semibold">Action</th>
+				</tr>
+			</thead>
+			<tbody>
+				{#each trades as trade}
+					<tr class="hover:bg-neutral-200 text-left">
+						<td class="px-6 py-3 text-indigo-400 font-light tracking-tighter">{trade.symbol}</td>
+						<td class="px-6 py-2 text-sm font-semibold">{trade.timestamp}</td>
+						<td class="px-6 py-2 text-sm font-semibold">${trade.price}</td>
+						<td class="px-6 py-2 text-sm font-semibold">{trade.orderAmount}</td>
+						<td class="px-6 py-2 text-sm font-semibold">{trade.quantity}</td>
+						<td class="px-6 py-2 text-sm font-semibold">{trade.type}</td>
+						<td class="px-6 py-2 text-sm font-semibold">{trade.isBuy ? 'Buy' : 'Sell'}</td>
+					</tr>
+				{/each}
 			</tbody>
 		</table>
 	</div>
