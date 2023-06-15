@@ -31,7 +31,6 @@
 			}
 			sortAscending = false;
 		}
-		console.log(currentSortColumn, sortAscending);
 
 		trades.sort((a: Trade, b: Trade) => {
 			const aValue: any = a[property];
